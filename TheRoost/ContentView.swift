@@ -21,7 +21,7 @@ struct ContentView: View {
             
             
             // group DMs
-            Messages()
+            ChatView()
                 .tabItem {
                     Image(systemName: "ellipsis.message.fill",)
                 }
