@@ -28,7 +28,7 @@ struct ContentView: View {
                 .tag(2)
             
             // profile page
-            Profile()
+            ProfileView()
                 .tabItem {
                     Image(systemName: "person.crop.circle")
                 }
