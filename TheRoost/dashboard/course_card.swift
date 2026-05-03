@@ -2,6 +2,7 @@ import SwiftUI
 
 struct CourseCard: View {
     let course: Course
+    let isMember: Bool
     let action: () -> Void
     
     private var textColor: Color {
@@ -11,14 +12,30 @@ struct CourseCard: View {
     var body: some View {
         Button(action: action) {
             VStack (alignment: .leading) {
-                Image(systemName: course.image)
-                    .font(.largeTitle.bold())
-                    .foregroundStyle(textColor)
-                    .frame(width: 75, height: 75)
-                    .background(
-                        Circle()
-                            .fill(Color.black.opacity(0.08))
-                    )
+                HStack (alignment: .top) {
+                    Image(systemName: course.image)
+                        .font(.largeTitle.bold())
+                        .foregroundStyle(textColor)
+                        .frame(width: 75, height: 75)
+                        .background(
+                            Circle()
+                                .fill(Color.black.opacity(0.08))
+                        )
+                    
+                    Spacer()
+                    
+                    if isMember {
+                        Image(systemName: "checkmark.circle")
+                            .foregroundStyle(textColor)
+                            .font(Font.system(size: 25))
+                    } else {
+                        Image(systemName: "plus.circle")
+                            .foregroundStyle(textColor)
+                            .font(Font.system(size: 25))
+                    }
+                    
+                }
+                
                 
                 HStack {
                     VStack (alignment: .leading, spacing: 4) {
@@ -39,7 +56,7 @@ struct CourseCard: View {
             .clipShape(RoundedRectangle(cornerRadius: 40))
             .overlay(
                 RoundedRectangle(cornerRadius: 40)
-                    .stroke(textColor, lineWidth: 4)
+                    .stroke(.normalTxt, lineWidth: 4)
             )
         }
         .buttonStyle(.plain)
@@ -47,5 +64,5 @@ struct CourseCard: View {
 }
 
 #Preview {
-    CourseCard(course:  Course(code: "CSC 306", name: "Operating Systems", members: 82, image: "gearshape.2", color: .yellow)) { }
+    CourseCard(course:  Course(code: "CSC 306", name: "Operating Systems", members: 82, image: "gearshape.2", color: .yellow), isMember: false) { }
 }

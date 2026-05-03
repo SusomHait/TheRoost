@@ -1,7 +1,8 @@
 import SwiftUI
 
 struct ProfileView: View {
-    @Binding var darkMode: Bool
+    @AppStorage("isLoggedIn") var isLoggedIn: Bool = false
+    @AppStorage("darkMode") var darkMode: Bool = false
 
     var body: some View {
         VStack(spacing: 0) {
@@ -100,6 +101,22 @@ struct ProfileView: View {
                             icon: "arrowshape.turn.up.right.circle.fill",
                             title: "Share the App"
                         )
+                        
+                        Button {
+                            isLoggedIn = false
+                            darkMode = false
+                        } label: {
+                            Text("Log Out")
+                                .font(.headline.bold())
+                                .frame(maxWidth: .infinity)
+                                .padding(14)
+                                .foregroundStyle(.contrast)
+                                .background(
+                                    RoundedRectangle(cornerRadius: 30)
+                                        .fill(Color.headerTxt)
+                                )
+                        }
+                        .padding(.top, 10)
                     }
                 }
                 .padding(.horizontal)

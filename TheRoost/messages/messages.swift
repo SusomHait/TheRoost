@@ -1,72 +1,72 @@
 import SwiftUI
 
 struct Messages : View {
-    let courses = Courses()
+    @Binding var user: sampleUser
     
     var body: some View {
-        ZStack {
-            VStack {
-                HStack {
-                    Image(systemName: "message.circle")
-                    Text("Your Messages")
-                        .bold()
+        NavigationStack {
+            ZStack {
+                VStack {
+                    HStack {
+                        Image(systemName: "message.circle")
+                        Text("Your Messages")
+                            .bold()
+                        
+                        Spacer()
+                    }
+                    .foregroundStyle(.headerTxt)
+                    .font(.largeTitle)
                     
-                    Spacer()
-                }
-                .foregroundStyle(.headerTxt)
-                .font(.largeTitle)
-                
-                ScrollView {
-                    Divider()
-                    ForEach(courses.compSci) { course in
-                        Button ( action: { } ) {
-                            VStack {
-                                HStack (spacing: 24) {
-                                    Image(systemName: course.image)
-                                        .font(Font.system(size: 20))
-                                    
-                                    VStack (alignment: .leading) {
+                    ScrollView {
+                        Divider()
+                        
+                        ForEach($user.courses) { $course in
+                            NavigationLink {
+                                ChatView(course: $course, user: $user)
+                            } label: {
+                                VStack {
+                                    HStack(spacing: 24) {
+                                        Image(systemName: course.image)
+                                            .font(Font.system(size: 20))
                                         
-                                        HStack {
-                                            Text(course.code)
-                                                .font(.title.bold())
+                                        VStack(alignment: .leading) {
+                                            HStack {
+                                                Text(course.code)
+                                                    .font(.title.bold())
+                                                
+                                                Spacer()
+                                                
+                                                Text(Date.now, format: .dateTime
+                                                    .month()
+                                                    .day()
+                                                    .year()
+                                                )
+                                                .font(.caption)
+                                            }
                                             
-                                            Spacer()
-                                            Text(Date.now, format: .dateTime
-                                                .month()
-                                                .day()
-                                                .year()
-                                            )
-                                            .font(.caption)
+                                            HStack {
+                                                Text(course.messages.last?.text ?? "No messages yet")
+                                                    .font(.subheadline)
+                                                    .lineLimit(1)
+                                                    .truncationMode(.tail)
+                                                    .foregroundStyle(Color.secondary)
+                                            }
                                         }
-                                        
-                                        HStack {
-                                            Text(course.msgPreview)
-                                                .font(.subheadline)
-                                                .lineLimit(1)
-                                                .truncationMode(.tail)
-                                                .foregroundStyle(Color.secondary)
-                                        }
-                                        
                                     }
+                                    
+                                    Divider()
                                 }
-                                
-                                Divider()
                             }
                         }
                     }
                 }
+                .fontDesign(.rounded)
+                .foregroundStyle(.normalTxt)
+                .padding(.horizontal)
+                .frame(maxWidth: .infinity, maxHeight: .infinity)
+                .background(.backing)
             }
-            .fontDesign(.rounded)
-            .foregroundStyle(.normalTxt)
-            .padding(.horizontal)
-            .frame(maxWidth: .infinity, maxHeight: .infinity)
-            .background(.backing)
         }
         .fontDesign(.rounded)
     }
-}
-
-#Preview {
-    Messages()
 }

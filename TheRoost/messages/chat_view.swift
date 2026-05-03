@@ -1,14 +1,8 @@
 import SwiftUI
 
-struct Message: Identifiable {
-    var id = UUID()
-    var text: String
-    var isCurrentUser: Bool
-}
-
 struct ChatView: View {
-    @State private var messages: [Message] = [
-        Message(text: "Hello, type something to start a chat", isCurrentUser: false) ]
+    @Binding var course: Course
+    @Binding var user: sampleUser
     
     @State private var newMessage: String = ""
     
@@ -17,15 +11,15 @@ struct ChatView: View {
             ScrollViewReader { proxy in
                 ScrollView{
                     LazyVStack(spacing: 12) {
-                        ForEach(messages) { message in
+                        ForEach(course.messages) { message in
                             bubbleView(for: message)
                         }
                     }
                     .padding()
                 }
-                .onChange(of: messages.count) {
+                .onChange(of: course.messages.count) {
                     withAnimation {
-                        proxy.scrollTo(messages.last?.id, anchor: .bottom)
+                        proxy.scrollTo(course.messages.last?.id, anchor: .bottom)
                     }
                 }
             }
@@ -37,10 +31,12 @@ struct ChatView: View {
                 } label: {
                     Label("Quiz", systemImage: "rectangle.stack.badge.person.crop")
                         .labelStyle(.iconOnly)
-                        .font(.system(size: 25, weight: .medium))
                         .padding(10)
-                        .background(.thinMaterial)
-                        .clipShape(Capsule())
+                        .frame(width: 50, height: 50)
+                        .background(
+                            Circle()
+                                .fill(Color.contrast.opacity(0.08))
+                        )
                 }
 
                 Button {
@@ -48,17 +44,21 @@ struct ChatView: View {
                 } label: {
                     Label("Notes", systemImage: "pencil.and.list.clipboard")
                         .labelStyle(.iconOnly)
-                        .font(.system(size: 25, weight: .medium))
                         .padding(10)
-                        .background(.thinMaterial)
-                        .clipShape(Capsule())
+                        .frame(width: 50, height: 50)
+                        .background(
+                            Circle()
+                                .fill(Color.contrast.opacity(0.08))
+                        )
                 }
 
                 Spacer()
             }
+            .foregroundStyle(.contrast)
+            .font(Font.system(size: 25))
             .padding(.horizontal)
-            .padding(.vertical, 6)
-            .background(.ultraThinMaterial)
+            .padding(.vertical, 12)
+            .background(.headerTxt)
             
             HStack(spacing: 12) {
                 TextField("Type a message...", text: $newMessage, axis: .vertical)
@@ -72,13 +72,25 @@ struct ChatView: View {
                 } label: {
                     Image(systemName: "paperplane.fill")
                         .font(.system(size: 24))
-                        .foregroundStyle(newMessage.isEmpty ? .gray : .blue)
+                        .foregroundStyle(newMessage.isEmpty ? .gray : .accent)
                 }
                 .disabled(newMessage.isEmpty)
             }
             .padding()
-            .background(.ultraThinMaterial)
+            .background(.panel)
             
+        }
+        .background(.backing)
+        .navigationTitle(course.code)
+        .navigationBarTitleDisplayMode(.inline)
+        .toolbar {
+            ToolbarItem(placement: .principal) {
+                HStack {
+                    Image(systemName: course.image)
+                    Text(course.code).bold()
+                }
+                .foregroundStyle(.headerTxt)
+            }
         }
         
     }
@@ -104,7 +116,7 @@ struct ChatView: View {
     
     func sendMessage() {
         let message = Message(text: newMessage, isCurrentUser: true)
-        messages.append(message)
+        course.messages.append(message)
         self.newMessage = ""
     }
     
@@ -119,8 +131,4 @@ struct ChatView: View {
         // e.g., navigate, present a sheet, or send a system message
         print("Group Notes tapped")
     }
-}
-
-#Preview {
-    ChatView()
 }

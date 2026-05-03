@@ -1,6 +1,13 @@
 import Foundation
 import SwiftUI
 
+struct Message: Identifiable {
+    var id = UUID()
+    
+    var text: String
+    var isCurrentUser: Bool
+}
+
 struct Course: Identifiable {
     var id: String { code }
 
@@ -12,6 +19,9 @@ struct Course: Identifiable {
     let color: Color
     
     let msgPreview: String = "This is a sample message showing intended functionality."
+    var messages: [Message] = [
+        Message(text: "Hello, type something to start a chat", isCurrentUser: false)
+    ]
 }
 
 struct Courses {
@@ -36,7 +46,7 @@ struct Courses {
     var math: [Course] = [
         Course(code: "MAT 167", name: "Calculus I", members: 100, image: "function", color: .teal),
         Course(code: "MAT 168", name: "Calculus II", members: 82, image: "sum", color: .indigo),
-        Course(code: "MAT 326", name: "Intro to Linear Algebra", members: 182, image: "matrix", color: .indigo),
+        Course(code: "MAT 326", name: "Intro to Linear Algebra", members: 182, image: "curlybraces", color: .indigo),
         Course(code: "MAT 320", name: "Prob and Math Stat I", members: 93, image: "chart.bar.xaxis", color: .blue)
     ]
 
@@ -56,14 +66,3 @@ struct Courses {
         Course(code: "BSC 110", name: "Principles of Biological Science I", members: 88, image: "leaf", color: .green)
     ]
 }
-
-/*
- var images: [String: String] = [
-     "compSci" : "computermouse",
-     "math" : "divide",
-     "english" : "book.closed",
-     "physics" : "magnifyingglass",
-     "chemistry": "flask",
-     "biology" : "apple.meditate"
- ]
- */

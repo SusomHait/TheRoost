@@ -2,7 +2,12 @@ import SwiftUI
 
 struct CardContent: View {
     let course: Course
+    let isMember: Bool
+    
+    @Binding var user: sampleUser
 
+    @AppStorage("isLoggedIn") var isLoggedIn: Bool = false
+    
     private var textColor: Color {
         course.color.isDark ? .white : .black
     }
@@ -50,19 +55,44 @@ struct CardContent: View {
                 .foregroundStyle(.normalTxt)
                 
                 HStack (spacing: 10) {
-                    Button (action: { dismiss() }) {
-                        HStack {
-                            Text("Join Group")
-                            Image(systemName: "plus.circle")
+                    Button (
+                        action: {
+                            if isMember {
+                                user.courses.removeAll { val in
+                                    val.code == course.code }
+                            } else {
+                                user.courses.append(course)
+                            }
+                            
+                            dismiss()
                         }
-                        .font(.headline.bold())
-                        .frame(maxWidth: .infinity)
-                        .foregroundStyle(.contrast)
-                        .padding(14)
-                        .background(
-                            RoundedRectangle(cornerRadius: 30)
-                                .fill(Color.headerTxt)
-                        )
+                    ) {
+                        if (isLoggedIn) {
+                            HStack {
+                                Text(isMember ? "Leave Group" : "Join Group")
+                                Image(systemName: isMember ? "minus.circle" : "plus.circle")
+                            }
+                            .font(.headline.bold())
+                            .frame(maxWidth: .infinity)
+                            .foregroundStyle(.contrast)
+                            .padding(14)
+                            .background(
+                                RoundedRectangle(cornerRadius: 30)
+                                    .fill(Color.headerTxt)
+                            )
+                        } else {
+                            Text("Log in to Join Groups")
+                                .font(.headline.bold())
+                                .frame(maxWidth: .infinity)
+                                .foregroundStyle(.contrast)
+                                .padding(14)
+                                .background(
+                                    RoundedRectangle(cornerRadius: 30)
+                                        .fill(Color.headerTxt)
+                                )
+                                .opacity(0.5)
+                        }
+                        
                     }
                 }
             }
@@ -71,8 +101,4 @@ struct CardContent: View {
         .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .top)
         .background(.backing)
     }
-}
-
-#Preview {
-    CardContent(course: Course(code: "CSC 306", name: "Operating Systems", members: 82, image: "gearshape.2", color: .yellow))
 }

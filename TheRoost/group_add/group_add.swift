@@ -3,6 +3,8 @@ import SwiftUI
 struct GroupAdd: View {
     @Environment(\.dismiss) private var dismiss
     
+    @Binding var courses: Courses
+    
     @State private var courseCode: String = ""
     @State private var courseName: String = ""
     @State private var description: String = ""
@@ -11,7 +13,12 @@ struct GroupAdd: View {
     
     // Color picker
     @State private var selectedColor: Color = Color(red: 0.97, green: 0.76, blue: 0.25)
+    
+    @State private var showAlert = false
+    @State private var alertMsg = ""
    
+    @AppStorage("isLoggedIn") var isLoggedIn: Bool = false
+    
     var body: some View {
         VStack {
             
@@ -81,6 +88,8 @@ struct GroupAdd: View {
                                 .foregroundStyle(.normalTxt)
                         }
                         .frame(width: 100, alignment: .leading)
+                        
+                        Spacer()
                       
                         VStack(alignment: .leading, spacing: 8) {
                             CheckboxRow(
@@ -141,9 +150,39 @@ struct GroupAdd: View {
                    
                     // Add Group Button
                     Button {
+                        if courseCode.trimmingCharacters(in: .whitespaces).isEmpty ||
+                           courseName.trimmingCharacters(in: .whitespaces).isEmpty ||
+                           description.trimmingCharacters(in: .whitespaces).isEmpty {
+                            
+                            alertMsg = "Please fill out all fields."
+                            showAlert = true
+                            return
+                        }
+                        
+                        let newGroup = Course(
+                            code: courseCode,
+                            name: courseName,
+                            members: 1,
+                            image: "folder.badge.plus",
+                            color: selectedColor
+                        )
+                        
+                        switch selectedCategory {
+                            case "Computer Science":
+                                courses.compSci.append(newGroup)
+                            case "Math":
+                                courses.math.append(newGroup)
+                            case "English":
+                                courses.english.append(newGroup)
+                            case "Science":
+                                courses.science.append(newGroup)
+                            default:
+                                break
+                        }
+                        
                         dismiss()
                     } label: {
-                        Text("Create Group")
+                        Text(isLoggedIn ? "Create Group" : "Log In to Create a Group")
                             .font(.headline)
                             .fontWeight(.bold)
                             .foregroundStyle(.contrast)
@@ -154,6 +193,8 @@ struct GroupAdd: View {
                                     .foregroundStyle(.headerTxt)
                             }
                     }
+                    .disabled(!isLoggedIn)
+                    .opacity(isLoggedIn ? 1 : 0.5)
                     .padding(.vertical, 10)
                   
                 }
@@ -224,8 +265,4 @@ struct CheckboxRow: View {
         }
         .buttonStyle(.plain)
     }
-}
-
-#Preview {
-    GroupAdd()
 }

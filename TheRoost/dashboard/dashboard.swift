@@ -1,11 +1,19 @@
 import SwiftUI
 
 struct Dashboard: View {
-    let courses = Courses()
+    @Binding var courses: Courses
 
     @State private var searchTxt: String = ""
     @State private var addingGroup: Bool = false
     @State private var expandedModule: Course? = nil
+    
+    @Binding var user: sampleUser
+    
+    func isMember(course: Course) -> Bool {
+        user.courses.contains { val in
+            val.code == course.code
+        }
+    }
 
     var body: some View {
         ZStack {
@@ -41,7 +49,7 @@ struct Dashboard: View {
                     }
                     .padding(10)
                     .background(
-                        RoundedRectangle(cornerRadius: 10)
+                        RoundedRectangle(cornerRadius: 20)
                             .fill(Color(.systemGray6))
                     )
                 }
@@ -55,6 +63,7 @@ struct Dashboard: View {
                             HStack () {
                                 Image(systemName: "flame.fill")
                                     .symbolRenderingMode(.palette)
+                                    .foregroundStyle(.red)
                                 
                                 Text("Popular")
                             }
@@ -66,7 +75,8 @@ struct Dashboard: View {
                                 HStack(spacing: 16) {
                                     ForEach(courses.trending) { course in
                                         CourseCard(
-                                            course: course
+                                            course: course,
+                                            isMember: isMember(course: course)
                                         ) {
                                             withAnimation {
                                                 expandedModule = course
@@ -83,6 +93,7 @@ struct Dashboard: View {
                         VStack (spacing: 10) {
                             HStack () {
                                 Image(systemName: "desktopcomputer.and.macbook")
+                                    .foregroundStyle(.teal)
                                 Text("Computer Science")
                             }
                             .padding(.horizontal)
@@ -93,7 +104,8 @@ struct Dashboard: View {
                                 HStack(spacing: 16) {
                                     ForEach(courses.compSci) { course in
                                         CourseCard(
-                                            course: course
+                                            course: course,
+                                            isMember: isMember(course: course)
                                         ) {
                                             withAnimation {
                                                 expandedModule = course
@@ -110,6 +122,7 @@ struct Dashboard: View {
                         VStack (spacing: 10) {
                             HStack () {
                                 Image(systemName: "pencil.and.ruler")
+                                    .foregroundStyle(.orange)
                                 Text("Math")
                             }
                             .padding(.horizontal)
@@ -120,7 +133,8 @@ struct Dashboard: View {
                                 HStack(spacing: 16) {
                                     ForEach(courses.math) { course in
                                         CourseCard(
-                                            course: course
+                                            course: course,
+                                            isMember: isMember(course: course)
                                         ) {
                                             withAnimation {
                                                 expandedModule = course
@@ -137,6 +151,7 @@ struct Dashboard: View {
                         VStack (spacing: 10) {
                             HStack () {
                                 Image(systemName: "books.vertical")
+                                    .foregroundStyle(.brown)
                                 Text("English")
                             }
                             .padding(.horizontal)
@@ -147,7 +162,8 @@ struct Dashboard: View {
                                 HStack(spacing: 16) {
                                     ForEach(courses.english) { course in
                                         CourseCard(
-                                            course: course
+                                            course: course,
+                                            isMember: isMember(course: course)
                                         ) {
                                             withAnimation {
                                                 expandedModule = course
@@ -164,6 +180,7 @@ struct Dashboard: View {
                         VStack (spacing: 10) {
                             HStack () {
                                 Image(systemName: "atom")
+                                    .foregroundStyle(.green)
                                 Text("Science")
                             }
                             .padding(.horizontal)
@@ -174,7 +191,8 @@ struct Dashboard: View {
                                 HStack(spacing: 16) {
                                     ForEach(courses.science) { course in
                                         CourseCard(
-                                            course: course
+                                            course: course,
+                                            isMember: isMember(course: course)
                                         ) {
                                             withAnimation {
                                                 expandedModule = course
@@ -189,26 +207,24 @@ struct Dashboard: View {
                     }
                 }
                 .sheet(isPresented: $addingGroup) {
-                    GroupAdd()
+                    GroupAdd(courses: $courses)
                         .presentationDetents([.height(500), .large])
                         .presentationDragIndicator(.visible)
                 }
                 .sheet(item: $expandedModule) { course in
-                    CardContent(course: course)
+                    CardContent(
+                        course: course,
+                        isMember: isMember(course: course),
+                        user: $user
+                    )
                         .presentationDetents([.height(500)])
                         .presentationDragIndicator(.visible)
                 }
             }
             .fontDesign(.rounded)
-            
-
         }
         .foregroundStyle(.normalTxt)
         .frame(maxWidth: .infinity, maxHeight: .infinity)
         .background(.backing)
     }
-}
-
-#Preview {
-    Dashboard()
 }

@@ -2,34 +2,39 @@ import SwiftUI
 
 struct ContentView: View {
     @State var selectedTab = 0
-    @State var darkMode: Bool = false
+    
+    @AppStorage("isLoggedIn") var isLoggedIn: Bool = false
+    @AppStorage("darkMode") var darkMode: Bool = false
+    
+    @State var user = sampleUser()
+    @State var courses = Courses()
     
     var body: some View {
-        TabView (selection: $selectedTab) {
-            // search dashboard
-            Dashboard()
+        TabView(selection: $selectedTab) {
+            Dashboard(courses: $courses, user: $user)
                 .tabItem {
                     Image(systemName: "house.fill")
                 }
                 .tag(0)
             
+            if (isLoggedIn) {
+                Messages(user: $user)
+                    .tabItem {
+                        Image(systemName: "ellipsis.message.fill")
+                    }
+                    .tag(1)
+            }
             
-            // group DMs
-            Messages()
-                .tabItem {
-                    Image(systemName: "ellipsis.message.fill")
-                }
-                .tag(1)
-            
-            // profile page
-            ProfileView(darkMode: $darkMode)
+            UserManager()
                 .tabItem {
                     Image(systemName: "person.crop.circle")
                 }
                 .tag(2)
         }
         .tint(Color.secondary)
-        .preferredColorScheme(darkMode ? .dark : .light)
+        .preferredColorScheme(
+            isLoggedIn ? (darkMode ? .dark : .light) : .light
+        )
     }
 }
 
