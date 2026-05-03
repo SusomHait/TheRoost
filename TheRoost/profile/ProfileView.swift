@@ -1,7 +1,7 @@
 import SwiftUI
 
 struct ProfileView: View {
-    @State private var darkModeOn = false
+    @Binding var darkMode: Bool
 
     var body: some View {
         VStack(spacing: 0) {
@@ -10,33 +10,26 @@ struct ProfileView: View {
 
                     // Top title row
                     HStack {
+                        Image(systemName: "gear")
                         Text("My Profile")
-                            .font(.system(size: 24, weight: .bold))
-
-                        Spacer()
-
-                        Image(systemName: "square.and.arrow.down")
-                            .font(.system(size: 28, weight: .bold))
+                            .bold()
                     }
-                    .padding(.top, 10)
-
-                    Divider()
-                        .overlay(Color.black)
+                    .foregroundStyle(.headerTxt)
+                    .font(.largeTitle)
 
                     // Profile image area
                     VStack(spacing: 10) {
                         Image(systemName: "person.crop.circle")
-                            .resizable()
-                            .scaledToFit()
-                            .frame(width: 130, height: 130)
-                            .foregroundColor(.black)
+                            .font(Font.system(size: 150))
 
                         Text("Click to add Photo")
                             .font(.system(size: 16))
-                            .foregroundColor(.gray)
+                            .foregroundColor(.secondary)
                     }
                     .frame(maxWidth: .infinity)
                     .padding(.vertical, 10)
+                    
+                    Divider()
 
                     // First section
                     VStack(spacing: 18) {
@@ -55,6 +48,8 @@ struct ProfileView: View {
                         .font(.system(size: 16, weight: .bold))
                         .padding(.top, 10)
 
+                    Divider()
+                    
                     // Settings section
                     VStack(spacing: 18) {
                         HStack {
@@ -64,20 +59,22 @@ struct ProfileView: View {
 
                             VStack(alignment: .leading, spacing: 2) {
                                 Text("Mode")
-                                    .font(.system(size: 18, weight: .medium))
+                                    .font(.system(size: 16, weight: .medium))
 
                                 Text("Dark & Light")
-                                    .font(.system(size: 14))
+                                    .font(.system(.caption))
                                     .foregroundColor(.gray)
                             }
 
                             Spacer()
 
-                            Toggle("", isOn: $darkModeOn)
+                            Toggle("", isOn: $darkMode)
                                 .labelsHidden()
-                                .tint(.black)
-                                .scaleEffect(1.1)
+                                .tint(.headerTxt)
+                                .scaleEffect(0.7)
                         }
+                        
+                        Divider()
 
                         profileRow(
                             icon: "globe",
@@ -104,38 +101,31 @@ struct ProfileView: View {
                             title: "Share the App"
                         )
                     }
-
-                    Divider()
-                        .overlay(Color.black)
-                        .padding(.top, 8)
                 }
-                .padding(.horizontal, 22)
+                .padding(.horizontal)
                 .padding(.bottom, 20)
             }
 
         }
-        .foregroundColor(.black)
-        .background(Color(red: 244/255, green: 182/255, blue: 63/255))
+        .fontDesign(.rounded)
+        .foregroundColor(.normalTxt)
+        .background(.backing)
     }
 
     func profileRow(icon: String, title: String) -> some View {
-        HStack {
-            Image(systemName: icon)
-                .font(.system(size: 28))
-                .frame(width: 40)
+        VStack {
+            HStack (spacing: 20) {
+                Image(systemName: icon)
+                Text(title)
 
-            Text(title)
-                .font(.system(size: 18, weight: .medium))
+                Spacer()
 
-            Spacer()
-
-            Image(systemName: "chevron.right")
-                .font(.system(size: 22, weight: .bold))
+                Image(systemName: "chevron.right")
+            }
+            .font(.system(size: 16, weight: .medium))
+            
+            Divider()
         }
     }
-}
-
-#Preview {
-    ProfileView()
 }
 

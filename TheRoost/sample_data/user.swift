@@ -1,4 +1,18 @@
 import Foundation
+import SwiftUI
+
+struct sampleUser {
+    var userName: String =  "John Doe"
+    var pass: String = "12345"
+    
+    var courses: [Course] = [
+        Course(code: "CSC 411", name: "Intro to DBMS", members: 93, image: "externaldrive.connected.to.line.below", color: .teal),
+        Course(code: "CSC 414", name: "Intro to SE", members: 103, image: "hammer", color: .cyan),
+        Course(code: "CSC 307", name: "Data Structures", members: 88, image: "square.stack.3d.up", color: .mint),
+        Course(code: "MAT 326", name: "Intro to Linear Algebra", members: 182, image: "matrix", color: .indigo),
+        Course(code: "MAT 320", name: "Prob and Math Stat I", members: 93, image: "chart.bar.xaxis", color: .blue)
+    ]
+}
 
 struct MessagePreview: Hashable {
     var id: String { name }

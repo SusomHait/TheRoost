@@ -2,6 +2,7 @@ import SwiftUI
 
 struct ContentView: View {
     @State var selectedTab = 0
+    @State var darkMode: Bool = false
     
     var body: some View {
         TabView (selection: $selectedTab) {
@@ -12,29 +13,39 @@ struct ContentView: View {
                 }
                 .tag(0)
             
-            // add a group
-            GroupAdd()
+            
+            // group DMs
+            Messages()
                 .tabItem {
-                    Image(systemName: "plus.circle.fill")
+                    Image(systemName: "ellipsis.message.fill")
                 }
                 .tag(1)
             
-            
-            // group DMs
-            ChatView()
-                .tabItem {
-                    Image(systemName: "ellipsis.message.fill",)
-                }
-                .tag(2)
-            
             // profile page
-            ProfileView()
+            ProfileView(darkMode: $darkMode)
                 .tabItem {
                     Image(systemName: "person.crop.circle")
                 }
-                .tag(3)
+                .tag(2)
         }
-        .tint(Color.accent)
+        .tint(Color.secondary)
+        .preferredColorScheme(darkMode ? .dark : .light)
+    }
+}
+
+// used for color correction for light/dark mode
+extension Color {
+    var isDark: Bool {
+        let uiColor = UIColor(self)
+        var red: CGFloat = 0
+        var green: CGFloat = 0
+        var blue: CGFloat = 0
+        var alpha: CGFloat = 0
+
+        uiColor.getRed(&red, green: &green, blue: &blue, alpha: &alpha)
+
+        let brightness = (red * 299 + green * 587 + blue * 114) / 1000
+        return brightness < 0.2
     }
 }
 

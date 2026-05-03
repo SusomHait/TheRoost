@@ -1,14 +1,36 @@
 import SwiftUI
 
-struct Dashboard2: View {
+struct Dashboard: View {
     let courses = Courses()
 
-    @State private var expandedModule: String? = nil
     @State private var searchTxt: String = ""
+    @State private var addingGroup: Bool = false
+    @State private var expandedModule: Course? = nil
 
     var body: some View {
         ZStack {
             VStack (spacing: 20) {
+                HStack {
+                    HStack {
+                        Image(systemName: "bird.circle")
+                        Text("The Roost")
+                            .bold()
+                    }
+                    
+                    Spacer()
+                    
+                    HStack {
+                        Button("Add Group", systemImage: "plus.circle") {
+                            addingGroup = true
+                        }
+                        .labelStyle(.iconOnly)
+                    }
+                }
+                .frame(maxWidth: .infinity)
+                .foregroundStyle(.headerTxt)
+                .padding(.horizontal)
+                .font(.largeTitle)
+                    
                 HStack {
                     // Search Bar
                     HStack {
@@ -22,13 +44,6 @@ struct Dashboard2: View {
                         RoundedRectangle(cornerRadius: 10)
                             .fill(Color(.systemGray6))
                     )
-                    
-                    // User Icon
-                    Button("User Icon", systemImage: "person.circle") {
-                        
-                    }
-                    .labelStyle(.iconOnly)
-                    .font(Font.largeTitle)
                 }
                 .padding(.horizontal)
                 
@@ -40,13 +55,12 @@ struct Dashboard2: View {
                             HStack () {
                                 Image(systemName: "flame.fill")
                                     .symbolRenderingMode(.palette)
-                                    .foregroundStyle(.red)
                                 
-                                Text("Trending")
+                                Text("Popular")
                             }
                             .padding(.horizontal)
                             .frame(maxWidth: .infinity, alignment: .leading)
-                            .font(Font.largeTitle.bold())
+                            .font(Font.title.bold())
                             
                             ScrollView(.horizontal, showsIndicators: false) {
                                 HStack(spacing: 16) {
@@ -55,12 +69,13 @@ struct Dashboard2: View {
                                             course: course
                                         ) {
                                             withAnimation {
-                                                expandedModule = course.code
+                                                expandedModule = course
                                             }
                                         }
                                     }
                                 }
                                 .padding(.horizontal)
+                                .padding(.vertical, 4)
                             }
                         }
                         
@@ -81,12 +96,13 @@ struct Dashboard2: View {
                                             course: course
                                         ) {
                                             withAnimation {
-                                                expandedModule = course.code
+                                                expandedModule = course
                                             }
                                         }
                                     }
                                 }
                                 .padding(.horizontal)
+                                .padding(.vertical, 4)
                             }
                         }
                         
@@ -107,12 +123,13 @@ struct Dashboard2: View {
                                             course: course
                                         ) {
                                             withAnimation {
-                                                expandedModule = course.code
+                                                expandedModule = course
                                             }
                                         }
                                     }
                                 }
                                 .padding(.horizontal)
+                                .padding(.vertical, 4)
                             }
                         }
                         
@@ -133,12 +150,13 @@ struct Dashboard2: View {
                                             course: course
                                         ) {
                                             withAnimation {
-                                                expandedModule = course.code
+                                                expandedModule = course
                                             }
                                         }
                                     }
                                 }
                                 .padding(.horizontal)
+                                .padding(.vertical, 4)
                             }
                         }
                         
@@ -159,37 +177,38 @@ struct Dashboard2: View {
                                             course: course
                                         ) {
                                             withAnimation {
-                                                expandedModule = course.code
+                                                expandedModule = course
                                             }
                                         }
                                     }
                                 }
                                 .padding(.horizontal)
+                                .padding(.vertical, 4)
                             }
                         }
                     }
                 }
-            }
-            .opacity(expandedModule == nil ? 1 : 0.4)
-            
-            if let expandedModule {
-                CardContent(
-                    name: expandedModule,
-                ) {
-                    withAnimation() {
-                        self.expandedModule = nil
-                    }
+                .sheet(isPresented: $addingGroup) {
+                    GroupAdd()
+                        .presentationDetents([.height(500), .large])
+                        .presentationDragIndicator(.visible)
                 }
-                .padding()
-                .zIndex(1)
-                .transition(.move(edge: .bottom))
+                .sheet(item: $expandedModule) { course in
+                    CardContent(course: course)
+                        .presentationDetents([.height(500)])
+                        .presentationDragIndicator(.visible)
+                }
             }
+            .fontDesign(.rounded)
+            
+
         }
+        .foregroundStyle(.normalTxt)
         .frame(maxWidth: .infinity, maxHeight: .infinity)
         .background(.backing)
     }
 }
 
 #Preview {
-    Dashboard2()
+    Dashboard()
 }

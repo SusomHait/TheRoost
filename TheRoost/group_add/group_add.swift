@@ -1,96 +1,132 @@
 import SwiftUI
 
 struct GroupAdd: View {
-   
+    @Environment(\.dismiss) private var dismiss
+    
     @State private var courseCode: String = ""
     @State private var courseName: String = ""
-    @State private var instructor: String = ""
-    @State private var time: String = ""
-    @State private var place: String = ""
+    @State private var description: String = ""
    
-    // Vibe checkboxes
-    @State private var seriousStudy: Bool = false
-    @State private var completeHW: Bool = false
-    @State private var justChilling: Bool = false
-   
+    @State private var selectedCategory: String = "Computer Science"
+    
     // Color picker
-    @State private var selectedColor: Color = .green
+    @State private var selectedColor: Color = Color(red: 0.97, green: 0.76, blue: 0.25)
    
     var body: some View {
-        ZStack {
-            Color(red: 0.97, green: 0.76, blue: 0.25) // golden yellow background to match usm colors
-                .ignoresSafeArea()
-           
+        VStack {
+            
+            
             ScrollView {
                 VStack(alignment: .leading, spacing: 16) {
                    
                     // Title
-                    Text("ADD YOUR STUDY GROUP")
-                        .font(.title2)
-                        .fontWeight(.heavy)
-                        .foregroundStyle(.black)
-                        .frame(maxWidth: .infinity, alignment: .center)
-                        .padding(.top, 20)
+                    HStack {
+                        Image(systemName: "folder.badge.plus")
+                        Text("Create a Group")
+                            .bold()
+                    }
+                    .foregroundStyle(.headerTxt)
+                    .padding(.top, 30)
+                    .font(.largeTitle)
+                    
                    
-                    Divider()
-                        .background(.black)
+                    Divider().background(.panel.opacity(0.3))
                    
                     // Course Code
-                    FormField(label: "Course\nCode", text: $courseCode)
+                    FormField(label: "Course Code:", preview: "Enter code", text: $courseCode)
                    
-                    Divider().background(.black.opacity(0.3))
+                    Divider().background(.panel.opacity(0.3))
                    
                     // Course Name
-                    FormField(label: "Course\nName", text: $courseName)
+                    FormField(label: "Course Name:", preview: "Enter name", text: $courseName)
                    
-                    Divider().background(.black.opacity(0.3))
+                    Divider().background(.panel.opacity(0.3))
                    
-                    // Instructor
-                    FormField(label: "Instructor", text: $instructor)
-                   
-                    Divider().background(.black.opacity(0.3))
-                   
-                    // Vibe for Group
+                    // Description
+                    HStack(spacing: 10) {
+                        Text("Description")
+                            .font(.subheadline)
+                            .fontWeight(.semibold)
+                            .frame(width: 150, alignment: .leading)
+                        
+                        ZStack(alignment: .topLeading) {
+                            if description.isEmpty {
+                                Text("Enter description")
+                                    .foregroundColor(.gray.opacity(0.5))
+                                    .padding(.top, 12)
+                                    .padding(.leading, 12)
+                            }
+
+                            TextEditor(text: $description)
+                                .scrollContentBackground(.hidden)
+                                .padding(8)
+                        }
+                        .background(
+                            RoundedRectangle(cornerRadius: 10)
+                                .fill(Color(.systemGray6))
+                        )
+                        .frame(height: 100)
+                    }
+                    .foregroundStyle(.normalTxt)
+
+                    
+                    Divider().background(.panel.opacity(0.3))
+                    
+                    // Group Category
                     HStack(alignment: .top, spacing: 16) {
                         VStack(alignment: .leading) {
-                            Text("Vibe for\nGroup")
+                            Text("Category")
                                 .font(.subheadline)
                                 .fontWeight(.semibold)
-                                .foregroundStyle(.black)
-                            Text("(Can Choose Multiple)")
-                                .font(.caption2)
-                                .foregroundStyle(.black.opacity(0.6))
+                                .foregroundStyle(.normalTxt)
                         }
                         .frame(width: 100, alignment: .leading)
                       
                         VStack(alignment: .leading, spacing: 8) {
-                            CheckboxRow(label: "Serious Study", isChecked: $seriousStudy)
-                            CheckboxRow(label: "Complete HW\ntogether", isChecked: $completeHW)
-                            CheckboxRow(label: "Just Chilling", isChecked: $justChilling)
+                            CheckboxRow(
+                                label: "Computer Science",
+                                isChecked: (selectedCategory == "Computer Science")
+                            ) {
+                                selectedCategory = "Computer Science"
+                            }
+
+                            CheckboxRow(
+                                label: "Math",
+                                isChecked: selectedCategory == "Math"
+                            ) {
+                                selectedCategory = "Math"
+                            }
+
+                            CheckboxRow(
+                                label: "English",
+                                isChecked: selectedCategory == "English"
+                            ) {
+                                selectedCategory = "English"
+                            }
+
+                            CheckboxRow(
+                                label: "Science",
+                                isChecked: selectedCategory == "Science"
+                            ) {
+                                selectedCategory = "Science"
+                            }
+                            
                         }
                     }
                     .padding(.vertical, 4)
                    
-                    Divider().background(.black.opacity(0.3))
-                   
-                    // Time
-                    FormField(label: "Time", text: $time)
-                   
-                    Divider().background(.black.opacity(0.3))
-                   
-                    // Place
-                    FormField(label: "Place", text: $place)
-                   
-                    Divider().background(.black.opacity(0.3))
+                    Divider().background(.panel.opacity(0.3))
                    
                     // Color Preview
                     HStack(spacing: 16) {
-                        Text("Color\nPreview:")
+                        Text("Color Preview:")
                             .font(.subheadline)
                             .fontWeight(.semibold)
-                            .foregroundStyle(.black)
+                            .foregroundStyle(.normalTxt)
                             .frame(width: 100, alignment: .leading)
                       
+                        Spacer()
+                        
                         RoundedRectangle(cornerRadius: 10)
                             .foregroundStyle(selectedColor)
                             .frame(width: 100, height: 40)
@@ -101,21 +137,21 @@ struct GroupAdd: View {
                     }
                     .padding(.vertical, 4)
                    
-                    Divider().background(.black.opacity(0.3))
+                    Divider().background(.panel.opacity(0.3))
                    
                     // Add Group Button
                     Button {
-                        // action here later
+                        dismiss()
                     } label: {
-                        Text("Add Group")
+                        Text("Create Group")
                             .font(.headline)
                             .fontWeight(.bold)
-                            .foregroundStyle(.white)
+                            .foregroundStyle(.contrast)
                             .frame(maxWidth: .infinity)
                             .padding(.vertical, 14)
                             .background {
                                 RoundedRectangle(cornerRadius: 30)
-                                    .foregroundStyle(.black)
+                                    .foregroundStyle(.headerTxt)
                             }
                     }
                     .padding(.vertical, 10)
@@ -125,40 +161,44 @@ struct GroupAdd: View {
                 .padding(.bottom, 30)
             }
         }
+        .background(.panel)
     }
 }
 
 // Reusable Form Field
 struct FormField: View {
     let label: String
+    let preview: String
     @Binding var text: String
    
     var body: some View {
-        HStack(spacing: 16) {
+        HStack(spacing: 10) {
             Text(label)
                 .font(.subheadline)
                 .fontWeight(.semibold)
-                .foregroundStyle(.black)
-                .frame(width: 100, alignment: .leading)
-           
-            TextField("", text: $text)
+                .frame(width: 150, alignment: .leading)
+            
+            TextField(preview, text: $text)
                 .padding(8)
-                .background {
-                    RoundedRectangle(cornerRadius: 6)
-                        .foregroundStyle(.white.opacity(0.85))
-                }
+                .background(
+                    RoundedRectangle(cornerRadius: 10)
+                        .fill(Color(.systemGray6))
+                )
+                .frame(maxWidth: .infinity, alignment: .leading)
         }
+        .foregroundStyle(.normalTxt)
     }
 }
 
 // Checkbox Row
 struct CheckboxRow: View {
     let label: String
-    @Binding var isChecked: Bool
+    let isChecked: Bool
+    let action: () -> Void
    
     var body: some View {
         Button {
-            isChecked.toggle()
+            action()
         } label: {
             HStack(alignment: .top, spacing: 8) {
                 RoundedRectangle(cornerRadius: 4)
@@ -178,7 +218,7 @@ struct CheckboxRow: View {
               
                 Text(label)
                     .font(.subheadline)
-                    .foregroundStyle(.black)
+                    .foregroundStyle(.normalTxt)
                     .multilineTextAlignment(.leading)
             }
         }
